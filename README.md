@@ -1,5 +1,6 @@
 # GameWebLab
-Game WebLab is a project that produces games played through a web browser.## Badges
+Game WebLab is a project that produces games played through a web browser.
+## Badges
 
 Use it as you want
 
