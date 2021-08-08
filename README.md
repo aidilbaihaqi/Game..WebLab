@@ -8,8 +8,7 @@ Use it as you want
 
  
 ## Games
-##- Corona RUN!
-- <img src="APP-Images/4.png">
+- Corona RUN!
 
 
 ## Web App in Web Site
