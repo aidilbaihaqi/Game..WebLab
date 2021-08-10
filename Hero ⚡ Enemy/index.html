@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Hero ⚡ Enemy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/%C3%87art_app_beyaz_%282%29.png/600px-%C3%87art_app_beyaz_%282%29.png" type="image/x-icon" />
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div id="battle">
+  <div class="hud">
+    <div class="currentPlayer" v-if="currentPlayer &amp;&amp; !hoveredPlayer">
+      <p><strong>{{currentPlayer.name}}</strong></p>
+      <p>HP: {{currentPlayer.currentHP}}/{{currentPlayer.startHP}}</p>
+      <p>Strength: {{currentPlayer.strength}}</p>
+      <p>Int: {{currentPlayer.int}}</p>
+    </div>
+    <div class="hoveredPlayer" v-if="hoveredPlayer">
+      <p><strong>{{hoveredPlayer.name}}</strong></p>
+      <p>HP: {{hoveredPlayer.currentHP}}/{{hoveredPlayer.startHP}}</p>
+      <p>Strength: {{hoveredPlayer.strength}}</p>
+      <p>Int: {{hoveredPlayer.int}}</p>
+      <p>Magic: {{hoveredPlayer.magic}}</p>
+    </div>
+    <button v-if="gameRunning" @click="addBadguy()" :style="{position:'fixed', right:0, top:0, padding: '5px 10px', margin:'5px'}">add Enemy</button>
+    <button class="add-hero" v-if="gameRunning" @click="addGoodguy()" :class="{callout:heroCallout}" :style="{position:'fixed', left:0, top:0, padding: '5px 10px', margin:'5px'}">add hero</button>
+    <div class="hero-callout" :class="{active:heroCallout}">
+      <div>Having difficulty? <span>Get backup!</span> <a @click="heroCalledOut()">x</a></div>
+    </div>
+  </div>
+  <button class="start" v-if="youWin || youLose" @click="reset()">Play Again</button>
+  <div class="background" v-if="gameRunning">
+    <div class="midground"></div>
+    <div class="midground"></div>
+    <div class="ground"></div>
+    <div class="announcement" v-if="youWin">You Win!</div>
+    <div class="announcement" v-if="youLose">You Lose!</div>
+    <div class="players">
+      <div class="player" v-for="player, index in players" :class="{defending: player.isDefending, dead: !player.living, healing:player.healing,  attacking:currentTurn === 'players' &amp;&amp; currentPlayer === player}">
+        <div class="controls" v-if="currentTurn === 'players' &amp;&amp; currentPlayer &amp;&amp;currentPlayer === player">
+          <button class="control attack" @click="attack()">Hit</button>
+          <button class="control spell" @click="castSpell(player.magic)">{{player.magic}}</button>
+          <button class="control defend" @click="defend()">Defend</button>
+        </div>
+        <div class="hp-container" v-if="player.living" @mouseenter="hoverPlayer(player)" @mouseleave="unhoverPlayer()"><span>{{player.name}}</span>
+          <div class="hp-bar" :style="{width: currentHPPct(player)+'%'}"></div>
+          <div class="hp-sub-bar" :style="{width: currentHPPct(player)+'%'}"></div>
+        </div>
+        <div class="stat hit" v-if="player.hit" :class="{enabled: player.hit}">-{{player.hit}}</div>
+        <div class="stat healed" v-if="player.healed" :class="{enabled: player.healed}">+{{player.healed}}</div>
+      </div>
+    </div>
+    <div class="enemies">
+      <div class="enemy" v-for="enemy in enemies" :class="[{dead:!enemy.living}, {attacking:currentTurn === 'enemies' &amp;&amp; currentEnemy === enemy}, {enraged:enemy.enraged}, {flaming: enemy.flaming}, {frozen: enemy.frozen === true}, enemy.name]">
+        <div class="horns" v-if="enemy.name === 'DarkJoel'"></div>
+        <div class="announce" :class="{visible: enemy.announce}">{{enemy.announce}}</div>
+        <div class="hp-container" v-if="enemy.living"><span>{{enemy.name}}</span>
+          <div class="hp-bar" :style="{width: currentHPPct(enemy)+'%'}"></div>
+          <div class="hp-sub-bar" :style="{width: currentHPPct(enemy)+'%'}"></div>
+        </div>
+        <div class="stat hit" v-if="enemy.hit" :class="{enabled: enemy.hit}">-{{enemy.hit}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js'>
+  </script><script  src="./script.js"></script>
+
+</body>
+</html>

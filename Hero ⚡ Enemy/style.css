@@ -1,0 +1,526 @@
+body {
+  width: 100%;
+  height: 100vh;
+}
+
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 9999;
+}
+
+#battle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.midground:nth-child(2) {
+  left: 10vh;
+  transform: rotate(45deg) translateY(-20%);
+}
+
+.background {
+  display: flex;
+  position: relative;
+  content: "";
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-end;
+  background: rgb(3, 181, 252);
+  background-image: linear-gradient(to bottom, skyblue, rgb(11, 11, 53));
+  overflow: hidden;
+}
+
+.ground {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 120%;
+  left: 0;
+  transform-origin: 50% 50%;
+  transform: rotate(45deg);
+  height: 50vh;
+  bottom: 0;
+  background: rgb(134, 123, 127);
+  transform: none;
+}
+
+.players, .enemies {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  z-index: 999;
+  width: 50%;
+  max-height: 60vh;
+  margin-bottom: 50px;
+}
+
+.enemies {
+  z-index: 998;
+}
+
+.player:before {
+  display: block;
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 40%;
+  background-color: rgb(196, 32, 32);
+  z-index: -1;
+}
+
+.player, .enemy {
+  display: block;
+  position: relative;
+  content: "";
+  height: 100px;
+  width: 60px;
+  margin-bottom: 20px;
+  transition: 0.2s linear;
+}
+.player .announce, .enemy .announce {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  width: 200%;
+  padding: 8px;
+  transform: translate(-50%, 0);
+  font-weight: bold;
+  opacity: 0;
+}
+.player .announce.visible, .enemy .announce.visible {
+  opacity: 1;
+}
+.player .announce:after, .enemy .announce:after {
+  display: block;
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  content: "";
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-top-color: white;
+  transform: translate(-50%, 0);
+}
+.player.attacking, .enemy.attacking {
+  margin-right: -50px;
+  transition: 0.4s linear;
+}
+.player:nth-child(even), .enemy:nth-child(even) {
+  margin-left: -60px;
+}
+.player:after, .enemy:after {
+  opacity: 0;
+  content: "(Defending)";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 5px;
+  transition: all 0.2s ease-out;
+}
+.player.defending:after, .enemy.defending:after {
+  opacity: 1;
+  transform: translate(-50%, -70%);
+}
+.player.dead, .enemy.dead {
+  background: grey;
+}
+.player.dead:after, .enemy.dead:after {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  content: "(dead)";
+  opacity: 1;
+}
+.player.flaming, .enemy.flaming {
+  background: FireBrick !important;
+}
+.player.flaming:after, .enemy.flaming:after {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  content: "flaming";
+  opacity: 1;
+  color: white;
+  background-color: transparent;
+}
+.player.frozen, .enemy.frozen {
+  background: blue !important;
+}
+.player.frozen:after, .enemy.frozen:after {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  content: "frozen";
+  opacity: 1;
+  background-color: transparent;
+}
+.player .hp-container, .enemy .hp-container {
+  display: block;
+  position: absolute;
+  padding: 1px;
+  top: -50px;
+  left: 50%;
+  content: "";
+  width: 100px;
+  height: 20px;
+  transform: translate(-50%, 0);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid white;
+}
+.player .hp-container span, .enemy .hp-container span {
+  position: relative;
+  left: 2px;
+  z-index: 10000;
+  font-size: 10px;
+  font-weight: bold;
+}
+.player .hp-container .hp-bar, .enemy .hp-container .hp-bar {
+  display: block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  background: dodgerblue;
+  transition: 0.3s linear;
+  z-index: 3;
+}
+.player .hp-container .hp-sub-bar, .enemy .hp-container .hp-sub-bar {
+  display: block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  background: rgba(255, 0, 0, 0.7);
+  transition: width 0.3s linear 0.2s;
+  z-index: 2;
+}
+.player.healing .hp-bar, .enemy.healing .hp-bar {
+  transition: width 0.3s linear 0.2s;
+}
+.player.healing .hp-sub-bar, .enemy.healing .hp-sub-bar {
+  background: rgba(124, 252, 0, 0.9);
+  transition: width 0.3s linear;
+}
+
+.enemy {
+  background: black;
+  position: relative;
+  transition: 0.2s linear, color 0.1s linear;
+}
+.enemy.attacking {
+  margin-left: -50px;
+  margin-right: 0;
+  -webkit-animation: bounce 0.3s infinite;
+          animation: bounce 0.3s infinite;
+  transition: 0.4s linear, color 0.1s linear;
+}
+.enemy.enraged {
+  background: red;
+}
+.enemy.Dreaded {
+  background: darkslategray;
+}
+.enemy.Dreaded .horns {
+  display: block;
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 10px;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-width: 20px 10px;
+  border-bottom-color: red;
+}
+.enemy.Dreaded .horns:after {
+  display: block;
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-width: 20px 10px;
+  border-bottom-color: red;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 100px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  transform: translate(0, -50%);
+  z-index: 5;
+}
+.controls:before {
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  content: "";
+  border: 20px solid transparent;
+  border-right-color: rgba(0, 0, 0, 0.7);
+  top: 50%;
+  left: -40px;
+  transform: translate(0, -50%);
+}
+.controls .control {
+  margin: 10px 0;
+}
+
+.announcement {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: white;
+  font-size: 60px;
+  text-transform: uppercase;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 99999;
+}
+
+.start {
+  padding: 5px 15px;
+  text-align: Center;
+  position: absolute;
+  display: block;
+  top: 60%;
+  left: 50%;
+  z-index: 9999990;
+  transform: translate(-50%, 0);
+}
+
+.stat {
+  display: block;
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  font-size: 20px;
+  font-weight: bold;
+  transform: translate(-50%, 0);
+  opacity: 1;
+  transition: 0.5s linear, opacity 0.2s linear 0.3s;
+}
+.stat.enabled {
+  transform: translate(-50%, -50px);
+}
+.stat.hit {
+  color: red;
+}
+.stat.healed {
+  color: lawngreen;
+}
+
+@-webkit-keyframes bounce {
+  0%, 60%, 100% {
+    transform: translate(0, 0);
+  }
+  28%, 32% {
+    transform: translate(0, -10px);
+  }
+}
+
+@keyframes bounce {
+  0%, 60%, 100% {
+    transform: translate(0, 0);
+  }
+  28%, 32% {
+    transform: translate(0, -10px);
+  }
+}
+.currentPlayer, .hoveredPlayer {
+  display: flex;
+  position: fixed;
+  justify-content: space-around;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  width: 100%;
+  text-align: center;
+  bottom: 0;
+  left: 0;
+  z-index: 99999;
+}
+
+.hoveredPlayer {
+  background: rgba(0, 0, 255, 0.9);
+}
+
+.instructions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000000;
+}
+.instructions p {
+  max-width: 80%;
+}
+.instructions strong {
+  color: white;
+}
+
+.add-hero {
+  position: relative;
+  z-index: 6;
+}
+.add-hero.callout {
+  border: 2px solid transparent;
+  -webkit-animation: glow 1s linear infinite;
+          animation: glow 1s linear infinite;
+}
+
+.hero-callout {
+  display: flex;
+  position: absolute;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  top: 50px;
+  left: 5px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0px;
+  color: white;
+  opacity: 0;
+  transform: translate(0, -20px);
+  transition: all 0.2s linear, transform 0.2s 1s;
+  z-index: 5;
+}
+.hero-callout.active {
+  opacity: 1;
+  transform: translate(0, 0);
+  transition: all 0.8s linear;
+}
+.hero-callout div {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 5px;
+}
+.hero-callout span {
+  display: block;
+  padding: 5px 10px;
+  color: yellow;
+  font-weight: bold;
+}
+.hero-callout a {
+  display: flex;
+  width: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  background: white;
+  color: black;
+  padding: 5px;
+  cursor: pointer;
+}
+.hero-callout:after {
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  content: "";
+  left: 40px;
+  top: -20px;
+  border: 10px solid transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.8);
+}
+
+@keyframes bounce {
+  0% {
+    transform: translate(0, -30%);
+  }
+  10% {
+    transform: translate(0, -20%);
+  }
+  20% {
+    transform: translate(0, -10%);
+  }
+  40% {
+    transform: translate(0, 5%);
+  }
+  50% {
+    transform: translate(0, 0%) scale(0.98, 1.02);
+  }
+  55% {
+    transform: translate(0, -8%) scale(0.98, 1.02);
+  }
+  70% {
+    transform: translate(0, -10%) scale(1, 1);
+  }
+  75% {
+    transform: translate(0, -15%);
+  }
+  80% {
+    transform: translate(0, -20%);
+  }
+  90% {
+    transform: translate(0, -30%);
+  }
+  100% {
+    transform: translate(0, -30%);
+  }
+}
+@-webkit-keyframes glow {
+  0%, 100% {
+    border: 2px solid rgba(255, 255, 0, 0);
+    box-shadow: 0;
+  }
+  30%, 70% {
+    border: 2px solid yellow;
+  }
+  60% {
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
+  }
+}
+@keyframes glow {
+  0%, 100% {
+    border: 2px solid rgba(255, 255, 0, 0);
+    box-shadow: 0;
+  }
+  30%, 70% {
+    border: 2px solid yellow;
+  }
+  60% {
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
+  }
+}
