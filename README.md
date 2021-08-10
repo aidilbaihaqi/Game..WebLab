@@ -10,6 +10,7 @@ Use it as you want
  
 ## Games
 - Corona RUN!
+- Hero ⚡ Enemy
 
 
 ## Web App in Web Site
