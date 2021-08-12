@@ -11,6 +11,7 @@ Use it as you want
 ## Games
 - Corona RUN!
 - Hero ⚡ Enemy
+- Arrow shooter
 
 
 ## Web App in Web Site
