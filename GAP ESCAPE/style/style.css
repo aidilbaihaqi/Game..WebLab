@@ -1,0 +1,43 @@
+*{
+    padding: 0;
+    margin: 0;
+    background-color: rgb(91, 235, 245);
+}
+#game{
+    width: 400px;
+    height: 500px;
+    border: 1px solid black;
+    margin: auto;
+    overflow: hidden;
+    background: url('https://images.squarespace-cdn.com/content/v1/5a661e81aeb625bf5c722e88/1517331210644-BZG2CMBC9FERVDC99VTR/sky-1.png?format=2500w');
+}
+#character{
+    width: 40px;
+    height: 40px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 100%;
+    position: relative;
+    top: 400px;
+    left: 190px;
+    z-index: 1000000;
+}
+.block{
+    width: 400px;
+    height: 20px;
+    background:url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYOrKaYu3pelngDmGQpNOd7KrExGBmxfr-LQ&usqp=CAU);
+    position: relative;
+    top: 100px;
+    margin-top: -20px;
+}   
+.hole{
+    width: 40px;
+    height: 20px;
+    background-color: rgba(115, 191, 226, 0.384);
+    position: relative;
+    top: 100px;
+    margin-top: -20px;
+}
+.text{
+  text-align: center;
+  font-size: 15;
+}
